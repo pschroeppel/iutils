@@ -8,7 +8,7 @@ device = "numpy"
 reference = data_root.file('scene1/0000-image0.png').read(dims="hwc", device=device, dtype=float32)
 data = reference + 0.05
 
-result = compute_pair_metric("SSIMY", data, reference, dims="hwc")
+result = compute_pair_metric("SSIMY", data, reference, dims="hwc", compute_map=True)
 
 error = result.error()
 error_map = result.map(device=device, dims="hwc")

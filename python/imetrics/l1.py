@@ -12,7 +12,7 @@ class L1Metric(_PairMetric):
     _has_error_map = True
     _precision = 3
 
-    def compute(self, data, reference, dims="hwc", device=None, compute_map=False):
+    def compute(self, data, reference, dims="hwc", device=None, compute_map=False, crop_boundary=None):
         if is_torch(data) and device is None: device = data.device
         if device is None:                    device = torch.device("cpu")
 
@@ -21,8 +21,14 @@ class L1Metric(_PairMetric):
 
         spatial_error_bhwc =  (data_bhwc - reference_hhwc).abs().sum(dim=3, keepdims=True)
 
+        if crop_boundary is not None and crop_boundary > 0:
+            c = crop_boundary
+            error = spatial_error_bhwc[:, c:-c, c:-c, :].mean().item()
+        else:
+            error = spatial_error_bhwc.mean().item()
+
         return Result(
-            error=spatial_error_bhwc.mean().item(),
+            error=error,
             error_map=spatial_error_bhwc if compute_map else None,
             precision=self._precision
         )

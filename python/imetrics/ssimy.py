@@ -13,17 +13,21 @@ class SSIMYMetric(_PairMetric):
     _has_error_map = False
     _precision = 3
 
-    def compute(self, data, reference, dims="hwc", device=None, compute_map=False):
-        if compute_map:
-            raise Exception(f"PSNRY cannot provide error map")
-
+    def compute(self, data, reference, dims="hwc", device=None, compute_map=False, crop_boundary=4):
         data_bhwc = convert(data, old_dims=dims, new_dims="bhwc", device="numpy", dtype=uint8)
         reference_bhwc = convert(reference, old_dims=dims, new_dims="bhwc", device="numpy", dtype=uint8)
+        s = data_bhwc.shape
+
+        if crop_boundary is not None and crop_boundary > 0:
+            c = crop_boundary
+            reference_bhwc = reference_bhwc[:, c:-c, c:-c, :]
+            data_bhwc = data_bhwc[:, c:-c, c:-c, :]
 
         import cv2
         C1 = (0.01 * 255) ** 2
         C2 = (0.03 * 255) ** 2
 
+        error_map = np.zeros((s[0], s[1], s[2], 1))
         errors = []
         for i in range(0, data_bhwc.shape[0]):
             data_hwc = data_bhwc[i, ...]
@@ -51,10 +55,14 @@ class SSIMYMetric(_PairMetric):
             ssim_map = ((2 * mu1_mu2 + C1) * (2 * sigma12 + C2)) / ((mu1_sq + mu2_sq + C1) *
                                                                     (sigma1_sq + sigma2_sq + C2))
 
+            pad = (s[1] - ssim_map.shape[0]) // 2
+            error_map[i, pad:-pad, pad:-pad, 0] = ssim_map
+
             errors.append(ssim_map.mean())
 
         return Result(
             error=sum(errors) / len(errors),
+            error_map=error_map,
             precision=self._precision
         )
 
