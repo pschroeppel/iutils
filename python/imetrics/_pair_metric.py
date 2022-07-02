@@ -10,5 +10,5 @@ class _PairMetric:
     def precision(self): return self._precision
     def has_error_map(self): return self._has_error_map
 
-    def compute(self, data, reference, dims="hwc", compute_map=False):
+    def compute(self, data, ref, dims="hwc", compute_map=False):
         raise NotImplementedError

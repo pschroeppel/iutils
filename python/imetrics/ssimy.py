@@ -13,14 +13,14 @@ class SSIMYMetric(_PairMetric):
     _has_error_map = False
     _precision = 3
 
-    def compute(self, data, reference, dims="hwc", device=None, compute_map=False, crop_boundary=4):
+    def compute(self, data, ref, dims="hwc", device=None, compute_map=False, crop_boundary=4):
         data_bhwc = convert(data, old_dims=dims, new_dims="bhwc", device="numpy", dtype=uint8)
-        reference_bhwc = convert(reference, old_dims=dims, new_dims="bhwc", device="numpy", dtype=uint8)
+        ref_bhwc = convert(ref, old_dims=dims, new_dims="bhwc", device="numpy", dtype=uint8)
         s = data_bhwc.shape
 
         if crop_boundary is not None and crop_boundary > 0:
             c = crop_boundary
-            reference_bhwc = reference_bhwc[:, c:-c, c:-c, :]
+            ref_bhwc = ref_bhwc[:, c:-c, c:-c, :]
             data_bhwc = data_bhwc[:, c:-c, c:-c, :]
 
         import cv2
@@ -31,13 +31,13 @@ class SSIMYMetric(_PairMetric):
         errors = []
         for i in range(0, data_bhwc.shape[0]):
             data_hwc = data_bhwc[i, ...]
-            reference_hwc = reference_bhwc[i, ...]
+            ref_hwc = ref_bhwc[i, ...]
 
             data_Y = cv2.cvtColor(data_hwc, cv2.COLOR_RGB2YCrCb)[:, :, 0]
-            reference_Y = cv2.cvtColor(reference_hwc, cv2.COLOR_RGB2YCrCb)[:, :, 0]
+            ref_Y = cv2.cvtColor(ref_hwc, cv2.COLOR_RGB2YCrCb)[:, :, 0]
 
             img1 = data_Y
-            img2 = reference_Y
+            img2 = ref_Y
 
             kernel = cv2.getGaussianKernel(11, 1.5)
             window = np.outer(kernel, kernel.transpose())

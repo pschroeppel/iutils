@@ -5,10 +5,10 @@ from imetrics import compute_pair_metric
 
 device = "numpy"
 
-reference = data_root.file('scene1/0000-image0.png').read(dims="hwc", device=device, dtype=float32)
-data = reference + 0.05
+ref = data_root.file('scene1/0000-image0.png').read(dims="hwc", device=device, dtype=float32)
+data = ref + 0.05
 
-result = compute_pair_metric("L1", data, reference, dims="hwc", compute_map=True)
+result = compute_pair_metric("L1", data, ref, dims="hwc", compute_map=True)
 
 error = result.error()
 error_map = result.map(device=device, dims="hwc")
@@ -22,7 +22,7 @@ ds = Dataset(file='out_l1/data.json', single_item=True, auto_write=True)
 # Show results
 with ds.viz.new_row() as row:
     row.add_cell('image', var='data').sv.set_data(data)
-    row.add_cell('image', var='reference').sv.set_data(reference)
+    row.add_cell('image', var='ref').sv.set_data(ref)
     row.add_cell('float', var='result').sv.set_data(error_map)
 
 print()
