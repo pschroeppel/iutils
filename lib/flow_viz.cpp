@@ -27,15 +27,14 @@ static void makecolorwheel(void)
     int BM = 13;
     int MR = 6;
     ncols = RY + YG + GC + CB + BM + MR;
-    //printf("ncols = %d\n", ncols);
     int i;
     int k = 0;
-    for (i = 0; i < RY; i++) setcols(255,    255*i/RY,   0,        k++);
-    for (i = 0; i < YG; i++) setcols(255-255*i/YG, 255,    0,        k++);
-    for (i = 0; i < GC; i++) setcols(0,      255,    255*i/GC,     k++);
-    for (i = 0; i < CB; i++) setcols(0,      255-255*i/CB, 255,        k++);
-    for (i = 0; i < BM; i++) setcols(255*i/BM,     0,    255,        k++);
-    for (i = 0; i < MR; i++) setcols(255,    0,    255-255*i/MR, k++);
+    for (i = 0; i < RY; i++) setcols(255,           255*i/RY,       0,            k++);
+    for (i = 0; i < YG; i++) setcols(255-255*i/YG,  255,            0,            k++);
+    for (i = 0; i < GC; i++) setcols(0,             255,            255*i/GC,     k++);
+    for (i = 0; i < CB; i++) setcols(0,             255-255*i/CB,   255,          k++);
+    for (i = 0; i < BM; i++) setcols(255*i/BM,      0,              255,          k++);
+    for (i = 0; i < MR; i++) setcols(255,           0,              255-255*i/MR, k++);
 }
 
 static void sintelCartesianToRGB(float fx, float fy, float* pix)
@@ -62,18 +61,13 @@ static void sintelCartesianToRGB(float fx, float fy, float* pix)
     int k0 = (int)fk;
     int k1 = (k0 + 1) % ncols;
     float f = fk - k0;
-    //f = 0; // uncomment to see original color wheel
     int b;
     for (b = 0; b < 3; b++) {
         float col0 = colorwheel[k0][b] / 255.0;
         float col1 = colorwheel[k1][b] / 255.0;
         float col = (1 - f) * col0 + f * col1;
         if (rad <= 1)
-            col = 1 - rad * (1 - col); // increase saturation with radius
-        //else
-        //    col *= .75; // out of range
-
-        //pix[2 - b] = (int)(255.0 * col);
+            col = 1 - rad * (1 - col);
         pix[b] = col;
     }
 }
@@ -84,7 +78,7 @@ void flow_viz_sintel(const float* input, unsigned char* output, int width, int h
 
     float pix[3] = {0.f, 0.f, 0.f};
 
-    // Eddy: modifiied scale division so scale corresponds to max possible displacement
+    // The scale division is modified so the saturated scale value corresponds to the max. displacement
     scale = 100.0/scale;
 
     for (int i = 0; i < size; ++i) {
@@ -189,7 +183,7 @@ void flow_viz_middlebury(const float* input, unsigned char* output, int width, i
 
     float pix[3] = {0.f, 0.f, 0.f};
 
-    // Eddy: inverted the scale, scale now corresponds to maximum possible displacement to display
+    // The scale division is modified so the saturated scale value corresponds to the max. displacement
     scale = 1.0/scale;
 
     for (int i = 0; i < size; ++i) {
