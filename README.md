@@ -17,7 +17,7 @@ Instructions:
 
     cd /my/code
     git clone https://github.com/eddy-ilg/iutils
-    cd imetrics 
+    cd iutils 
 
     # Install requirements
     pip3 install --user -r requirements.txt 
