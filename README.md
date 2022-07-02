@@ -19,9 +19,12 @@ Instructions:
     git clone https://github.com/eddy-ilg/iutils
     cd imetrics 
 
-    ./compile.sh 
-    
+    # Install requirements
     pip3 install --user -r requirements.txt 
+
+    # Compile ctypes extensions 
+    # (will be kept in the local "build" folder that will be added to LD_LIBRARY_PATH)
+    ./compile.sh 
 
     # Add to your ~/.bashrc:
     # (this will configure PATH, PYTHONPATH and LD_LIBRARY_PATH)
