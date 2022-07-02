@@ -14,7 +14,7 @@ error = result.error()
 error_map = result.map(device=device, dims="hwc")
 
 print()
-print("EPE Error: ", result.formatted())
+print("EPE Error: ", error)
 
 # Create dataset with a single item
 ds = Dataset(file='out_epe/data.json', single_item=True, auto_write=True)

@@ -5,7 +5,7 @@ import math
 from ._pair_metric import _PairMetric
 from .result import Result
 from .registry import register_pair_metric
-from itypes import is_numpy, is_torch, convert, uint8
+from itypes import is_numpy, is_torch, convert, uint8, FormattedFloat
 
 
 class SSIMYMetric(_PairMetric):
@@ -61,9 +61,7 @@ class SSIMYMetric(_PairMetric):
             errors.append(ssim_map.mean())
 
         return Result(
-            error=sum(errors) / len(errors),
-            error_map=error_map,
-            precision=self._precision
+            error=FormattedFloat(sum(errors) / len(errors), self._precision)
         )
 
 register_pair_metric(SSIMYMetric)

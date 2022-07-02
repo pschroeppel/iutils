@@ -4,7 +4,7 @@ import torch
 from ._pair_metric import _PairMetric
 from .result import Result
 from .registry import register_pair_metric
-from itypes import is_numpy, is_torch, convert
+from itypes import is_numpy, is_torch, convert, FormattedFloat
 
 
 class L1Metric(_PairMetric):
@@ -28,9 +28,8 @@ class L1Metric(_PairMetric):
             error = spatial_error_bhwc.mean().item()
 
         return Result(
-            error=error,
-            error_map=spatial_error_bhwc if compute_map else None,
-            precision=self._precision
+            error=FormattedFloat(error, self._precision),
+            error_map=spatial_error_bhwc if compute_map else None
         )
 
 register_pair_metric(L1Metric)

@@ -16,5 +16,12 @@ def compute_pair_metric(type, *args, **kwargs):
 
     return _instances[type].compute(*args, **kwargs)
 
+def metric_precision(type):
+    if type not in _metrics:
+        raise Exception(f"unkonwn metric type {type}")
+
+    return _metrics[type]._precision
+
+
 def available_pair_metrics():
     return _metrics.keys()

@@ -14,7 +14,7 @@ error = result.error()
 error_map = result.map(device=device, dims="hwc")
 
 print()
-print("L2 Error: ", result.formatted())
+print("L2 Error: ", error)
 
 # Create dataset with a single item
 ds = Dataset(file='out_l2/data.json', single_item=True, auto_write=True)
